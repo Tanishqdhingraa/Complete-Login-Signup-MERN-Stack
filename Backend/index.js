@@ -1,15 +1,25 @@
 import express from 'express';
-import './models/db.js';  // <-- replace require() with import
+import './models/db.js';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import authRoutes from "./routes/authrouter.js";  // correct import
 
 const app = express();
 const port = 3000;
 
-// Define a route for the root URL
+// Middlewares
+app.use(bodyParser.json());
+app.use(cors());
+
+// Use the imported router
+app.use("/auth", authRoutes);
+
+// Root route
 app.get('/', (req, res) => {
   res.send('Hello from Express!');
 });
 
-// Start the server
+// Start server
 app.listen(port, () => {
   console.log(`Express server listening at http://localhost:${port}`);
 });
