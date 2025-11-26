@@ -14,6 +14,8 @@ app.use(cors());
 // Use the imported router
 app.use("/auth", authRoutes);
 
+app.use("/products", authRoutes);
+
 // Root route
 app.get('/', (req, res) => {
   res.send('Hello from Express!');

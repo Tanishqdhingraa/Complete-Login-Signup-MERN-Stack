@@ -2,9 +2,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import UserModel from "../models/User.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
-
-// Signup
 export const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -38,12 +35,11 @@ export const login = async (req, res) => {
     if (!isMatch)
       return res.status(401).json({ success: false, message: "Invalid credentials" });
 
-    //JSON WEB TOKEN
     const token = jwt.sign(
-        { id: user._id, email: user.email }
-        , process.env.JWT_SECRET, {
-      expiresIn: "24h",
-    });
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
 
     res.status(200).json({
       success: true,
@@ -54,5 +50,28 @@ export const login = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// Get All Users
+export const getuser = async (req, res) => {
+  try {
+    const users = await UserModel.find();
+
+    res.status(200).json({
+      success: true,
+      message: "Users fetched successfully",
+      totalUsers: users.length,
+
+      users,
+      
+    });
+  } catch (error) {
+    console.log("Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error,
+    });
   }
 };
